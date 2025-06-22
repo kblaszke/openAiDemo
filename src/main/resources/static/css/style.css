@@ -1,0 +1,9 @@
+.center {
+  margin: auto;
+  width: 80%;
+}
+
+.multilineTextBox {
+    width:400px;
+    height:100px;
+}

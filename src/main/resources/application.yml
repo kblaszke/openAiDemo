@@ -1,3 +1,4 @@
 myapp:
   settings:
     apiKey: sk-proj-GS_
+    cleanDataDelay: 3600000
