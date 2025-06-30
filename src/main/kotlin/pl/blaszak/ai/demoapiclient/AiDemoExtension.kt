@@ -1,6 +1,6 @@
 package pl.blaszak.ai.demoapiclient
 
-import pl.blaszak.ai.demoapiclient.model.ChatMessage
-import pl.blaszak.ai.demoapiclient.model.Message
+import pl.blaszak.ai.demoapiclient.model.LocalDbMessage
+import pl.blaszak.ai.demoapiclient.model.OpenAiChatMessage
 
-fun Message.toChatMessage() = ChatMessage(role.aiName, prompt)
+fun LocalDbMessage.toChatMessage() = OpenAiChatMessage(localDbRole.aiName, prompt)
