@@ -10,7 +10,7 @@ import pl.blaszak.ai.demoapiclient.model.OpenAiChatMessage
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatRequest
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatResponse
 
-class ApiService(val apiKey: String) {
+class OpenAiService(val apiKey: String) {
 
     val objectMapper = jacksonObjectMapper()
     val okHttpClient = OkHttpClient()

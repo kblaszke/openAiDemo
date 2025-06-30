@@ -5,7 +5,7 @@ import pl.blaszak.ai.demoapiclient.model.LocalDbMessage
 import pl.blaszak.ai.demoapiclient.model.LocalDbRole
 import pl.blaszak.ai.demoapiclient.toChatMessage
 
-class ChatService(val messageRepository: MessageRepository, val apiService: ApiService) {
+class ChatService(val messageRepository: MessageRepository, val openAiService: OpenAiService) {
 
     fun handle(
         conversationId: String,
@@ -15,6 +15,6 @@ class ChatService(val messageRepository: MessageRepository, val apiService: ApiS
         val localDbMessage = LocalDbMessage(null, conversationId, localDbRole, prompt)
         messageRepository.save<LocalDbMessage>(localDbMessage)
         val messages = messageRepository.findByConversationId(conversationId)
-        apiService.chatGpt(messages.map{it.toChatMessage()}, 0.7)
+        openAiService.chatGpt(messages.map{it.toChatMessage()}, 0.7)
     }
 }
