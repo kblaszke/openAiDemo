@@ -1,4 +1,6 @@
-myapp:
+app:
   settings:
     apiKey: sk-proj-GS_
     cleanDataDelay: 3600000
+    chromaDbUrl: http://localhost:8000
+    collectionName: dhamma_talks

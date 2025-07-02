@@ -3,6 +3,7 @@ package pl.blaszak.ai.demoapiclient.model
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
+import jakarta.persistence.Lob
 import org.hibernate.annotations.NamedQueries
 import org.hibernate.annotations.NamedQuery
 import java.time.LocalDateTime
@@ -22,6 +23,7 @@ class LocalDbMessage(
     @Id @GeneratedValue var id: Long? = null,
     var conversationId: String,
     var localDbRole: LocalDbRole,   // "user", "assistant", "system"
+    @Lob
     var prompt: String,
     var creationDateTime: LocalDateTime = LocalDateTime.now()
 ) {

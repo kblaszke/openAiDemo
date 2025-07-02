@@ -9,14 +9,22 @@ import pl.blaszak.ai.demoapiclient.exceptions.AiDemoException
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatMessage
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatRequest
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatResponse
+import pl.blaszak.ai.demoapiclient.model.OpenAiEmbeddingsRequest
+import pl.blaszak.ai.demoapiclient.model.OpenAiEmbeddingsResponse
 
 class OpenAiService(val apiKey: String) {
+
+    companion object {
+        val BASE_URL = "https://api.openai.com/v1"
+        val CHAT_ENDPOINT = "/chat/completions"
+        val EMBEDDINGS_ENDPOINT = "/embeddings"
+    }
 
     val objectMapper = jacksonObjectMapper()
     val okHttpClient = OkHttpClient()
 
     fun chatGpt(messages: List<OpenAiChatMessage>, temperature: Double): String {
-        val request = createRequest(messages, temperature)
+        val request = createChatRequest(messages, temperature)
         val response = okHttpClient.newCall(request).execute()
         if (!response.isSuccessful) throw AiDemoException("Unexpected code $response")
         val body = response.body?.string() ?: throw AiDemoException("No response body")
@@ -24,14 +32,31 @@ class OpenAiService(val apiKey: String) {
         return openAiChatResponse.choices.first().message.content
     }
 
-    private fun createRequest(messages: List<OpenAiChatMessage>, temperature: Double): Request {
-        val payload = OpenAiChatRequest(messages = messages, temperature = temperature)
-        val requestBody = objectMapper.writeValueAsString(payload)
-        return createRequest(requestBody)
+    fun getEmbeddings(text: String): List<Float> {
+        val request = createEmbeddingsRequest(text)
+        val response = okHttpClient.newCall(request).execute()
+        if (!response.isSuccessful) throw AiDemoException("Unexpected code $response")
+        val body = response.body?.string() ?: throw AiDemoException("No response body")
+        val embeddingsResponse = objectMapper.readValue(body, OpenAiEmbeddingsResponse::class.java)
+        val embeddings = embeddingsResponse.data.first().embedding
+        return embeddings
+        /*return listOf(1.75F, 3.14F, 1.1F )*/
     }
 
-    private fun createRequest(requestBody: String) = Request.Builder()
-            .url("https://api.openai.com/v1/chat/completions")
+    private fun createEmbeddingsRequest(text: String): Request {
+        val payload = OpenAiEmbeddingsRequest(input = text)
+        val requestBody = objectMapper.writeValueAsString(payload)
+        return createRequest(EMBEDDINGS_ENDPOINT, requestBody)
+    }
+
+    private fun createChatRequest(messages: List<OpenAiChatMessage>, temperature: Double): Request {
+        val payload = OpenAiChatRequest(messages = messages, temperature = temperature)
+        val requestBody = objectMapper.writeValueAsString(payload)
+        return createRequest(CHAT_ENDPOINT, requestBody)
+    }
+
+    private fun createRequest(endpoint: String, requestBody: String) = Request.Builder()
+            .url(BASE_URL + endpoint)
             .header("Authorization", "Bearer $apiKey")
             .header("Content-Type", "application/json")
             .post(requestBody.toRequestBody("application/json".toMediaType()))
