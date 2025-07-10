@@ -23,6 +23,9 @@ allOpen {
 
 repositories {
 	mavenCentral()
+	maven {
+		url = uri("https://repo.spring.io/milestone")
+	}
 }
 
 dependencies {
@@ -30,6 +33,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.ai:spring-ai-starter-model-openai")
+	implementation("org.springframework.ai:spring-ai-starter-vector-store-chroma")
+	implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M8"))
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

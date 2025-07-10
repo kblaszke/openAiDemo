@@ -5,6 +5,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.springframework.ai.chat.client.ChatClient
+import org.springframework.beans.factory.annotation.Autowired
 import pl.blaszak.ai.demoapiclient.exceptions.AiDemoException
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatMessage
 import pl.blaszak.ai.demoapiclient.model.OpenAiChatRequest
@@ -40,7 +42,6 @@ class OpenAiService(val apiKey: String) {
         val embeddingsResponse = objectMapper.readValue(body, OpenAiEmbeddingsResponse::class.java)
         val embeddings = embeddingsResponse.data.first().embedding
         return embeddings
-        /*return listOf(1.75F, 3.14F, 1.1F )*/
     }
 
     private fun createEmbeddingsRequest(text: String): Request {

@@ -5,17 +5,17 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
 import pl.blaszak.ai.demoapiclient.MessageRepository
+import pl.blaszak.ai.demoapiclient.service.OpenAiService
 import pl.blaszak.ai.demoapiclient.service.ChatService
 import pl.blaszak.ai.demoapiclient.service.ChromaDbService
-import pl.blaszak.ai.demoapiclient.service.OpenAiService
 
 @Configuration
-@EnableConfigurationProperties(SecretProperties::class)
+@EnableConfigurationProperties(AppSettingsProperties::class)
 @EnableScheduling
-class Configuration(private val secretProperties: SecretProperties) {
+class Configuration(private val appSettings: AppSettingsProperties) {
 
     @Bean
-    fun apiService(secretProperties: SecretProperties) = OpenAiService(secretProperties.apiKey)
+    fun apiService(appSettings: AppSettingsProperties) = OpenAiService(appSettings.spring.ai.openai.apiKey)
 
     @Bean
     fun chatService(
@@ -26,9 +26,9 @@ class Configuration(private val secretProperties: SecretProperties) {
         messageRepository,
         openAiService,
         chromaDbService,
-        secretProperties.collectionName
+        appSettings.db.chroma.collection
     )
 
     @Bean
-    fun chromaDbService() = ChromaDbService(secretProperties.chromaDbUrl)
+    fun chromaDbService() = ChromaDbService(appSettings.db.chroma.url)
 }
