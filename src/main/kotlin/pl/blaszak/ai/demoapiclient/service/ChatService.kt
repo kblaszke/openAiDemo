@@ -20,7 +20,10 @@ class ChatService(val messageRepository: MessageRepository,
         val localDbMessage = LocalDbMessage(null, conversationId, localDbRole, prompt)
         messageRepository.save<LocalDbMessage>(localDbMessage)
         val messages = messageRepository.findByConversationId(conversationId)
-        openAiService.chatGpt(messages.map{it.toChatMessage()}, 0.7)
+        val chatGptResponse = openAiService.chatGpt(messages.map { it.toChatMessage() }, 0.7)
+        val responseDbMessage = LocalDbMessage(null, conversationId, LocalDbRole.SYSTEM, chatGptResponse)
+        messageRepository.save<LocalDbMessage>(responseDbMessage)
+        chatGptResponse
     }
 
     private fun createPrompt(role: LocalDbRole, question: String): String {

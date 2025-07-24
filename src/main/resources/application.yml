@@ -1,7 +1,7 @@
 spring:
   ai:
     openai:
-      api-key: sk-proj-GS_
+      api-key: ${OPENAI_API_KEY}
       chat:
         options:
           model: gpt-4
