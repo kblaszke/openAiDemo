@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 import chromadb
 from chromadb.config import Settings
 
@@ -62,12 +62,14 @@ def create_collection(collection: CollectionModel):
     except Exception as e:
         raise HTTPException(status_code=409, detail=f"Collection already exists or error: {e}")
 
+@app.delete("/collection/{name}")
+def delete_collection(name: str):
+    try:
+        client.delete_collection(name=name)
+        return {"status": "deleted", "collection": name}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Błąd przy usuwaniu kolekcji: {str(e)}")
 
-
-
-
-from pydantic import BaseModel
-from typing import List, Optional
 
 class AddEmbeddingRequest(BaseModel):
     collection: str
