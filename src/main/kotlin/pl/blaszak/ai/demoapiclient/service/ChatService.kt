@@ -1,14 +1,17 @@
 package pl.blaszak.ai.demoapiclient.service
 
 import pl.blaszak.ai.demoapiclient.MessageRepository
+import pl.blaszak.ai.demoapiclient.mergeCloserChunks
 import pl.blaszak.ai.demoapiclient.model.LocalDbMessage
 import pl.blaszak.ai.demoapiclient.model.LocalDbRole
 import pl.blaszak.ai.demoapiclient.toChatMessage
 
-class ChatService(val messageRepository: MessageRepository,
-                  val openAiService: OpenAiService,
-                  val chromaDbService: ChromaDbService,
-                  val collectionName: String
+class ChatService(
+    val messageRepository: MessageRepository,
+    val openAiService: OpenAiService,
+    val chromaDbService: ChromaDbService,
+    val collectionName: String,
+    val maxTokens: Int
 ) {
 
     fun handle(
@@ -31,7 +34,9 @@ class ChatService(val messageRepository: MessageRepository,
             LocalDbRole.USER -> {
                 val embeddings = openAiService.getEmbeddings(question)
                 val similarDocuments = chromaDbService.querySimilarDocuments(collectionName, embeddings)
-                return createPrompt(question, similarDocuments.joinToString(separator = "\n\n"))
+                val fragments = similarDocuments.mergeCloserChunks()
+                    .joinToString(separator = "\n") { it.text }.take(maxTokens)
+                return createPrompt(question, fragments)
             }
             else -> question
         }

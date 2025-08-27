@@ -26,7 +26,8 @@ class Configuration(private val appSettings: AppSettingsProperties) {
         messageRepository,
         openAiService,
         chromaDbService,
-        appSettings.db.chroma.collection
+        appSettings.db.chroma.collection,
+        appSettings.spring.ai.openai.chat.options.maxTokens * 4
     )
 
     @Bean

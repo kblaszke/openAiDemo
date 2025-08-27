@@ -18,9 +18,18 @@ data class ChromaDbQueryResponse(
     val distances: List<List<Float>>
 )
 
+data class SearchResult(
+    val id: String,
+    var text: String,
+    val documentId: String,
+    val position: Int,
+    val score: Float
+)
+
 data class Metadata(
     val title: String? = null,
     val author: String? = null,
+    val fileName: String? = null,
     val chunk_id: String? = null,
     val source: String? = null
 )
